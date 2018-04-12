@@ -5,6 +5,7 @@
  *     struct ListNode *next;
  * };
  */
+
 struct ListNode* mergeTwoLists(struct ListNode *, struct ListNode *);
 
 struct ListNode* mergeKLists(struct ListNode** lists, int listsSize) {
@@ -25,8 +26,6 @@ struct ListNode* mergeKLists(struct ListNode** lists, int listsSize) {
     }
 
     return dummy;
-
-    
 }
 
 
