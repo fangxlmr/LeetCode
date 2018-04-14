@@ -24,21 +24,19 @@ struct ListNode* reverseKGroup(struct ListNode* head, int k) {
     pNode dummy = (pNode) malloc(sizeof(Node)); /* 新建一个头结点，也即最后的返回值 */
     dummy->next = NULL;
     pNode pHead = dummy;    /* 头插法的头结点标志，初始为dummy */
-    pNode pTail;    /* 记录当前链表的尾结点 */
-    pCur = head;    /* 工作指针 */
+    pNode pBegin = head, pEnd = head; /* k个结点的起止位置标志 */
     while(len >= k){
+        pHead = pEnd;   /* 重置头结点 */
         int i = 0;
-        while(pCur && i < k){     /* 头插法，反序 */
-            if(i == 0)
-                pTail = pCur;
-            pNode p = pCur->next;
-            pCur->next = pHead->next;
-            pHead->next = pCur;
-            pCur = p;
+        while(pEnd && i < k){     /* 找到第k个结点 */
+            pEnd = pEnd->next;
             ++i;
-            --len;
         }
-        pHead = pTail;   /* 新的头结点 */
+        while(pBegin < pEnd){
+            insert(pHead, pBegin);  /* 头插法，插入 */
+            pBegin = pBegin->next;
+        }
+        len -= k;   /* 更新长度 */
     }
 
     pHead->next = pCur;    /* 拼接链表多余的部分*/
