@@ -1,5 +1,0 @@
-.gitignore
-test*
-.idea/
-CmakeLists.txt
-cmake-build-debug/
