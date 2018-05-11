@@ -15,7 +15,7 @@ int numTrees(int n) {
 
 /* iteration solution */
 int numTrees(int n) {
-    if (n < 0) {
+    if (n <= 0) {
         return 0;
     }
 
