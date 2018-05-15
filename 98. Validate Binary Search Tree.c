@@ -80,4 +80,3 @@ bool isValidBST(struct TreeNode* root) {
     }
     return true;
 }
-pre = NULL;

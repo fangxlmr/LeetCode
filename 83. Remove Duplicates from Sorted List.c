@@ -7,32 +7,15 @@
  */
 
 typedef struct ListNode ListNode, *pListNode;
-
-
-/* is the two adjacent node duplicated? */
-bool isdup (pListNode); 
-
-
 struct ListNode* deleteDuplicates(struct ListNode* head) {
-    pListNode pCur = head, pDel = head;
-    while (pCur) {
-        if (isdup(pCur)) {  /* if duplicate */
-            pDel = pCur->next;
-            pCur->next = pDel->next;
-            free (pDel);
-            pDel = NULL;
+    pListNode *indirect = &head;    /* indirect pointer point to head node */
+    while (*indirect && (*indirect)->next) {
+        if ((*indirect)->val != (*indirect)->next->val) {
+            /* if node, node->next dup, remove node */
+            *indirect = (*indirect)->next;
+            continue;
         }
-        else{   /* if no */
-            pCur = pCur->next;
-        }
+        indirect = &(*indirect)->next;  /* Move to next */
     }
     return head;
-}
-
-
-bool isdup (pListNode lnode) {
-    if (lnode && lnode->next && lnode->val == lnode->next->val)
-        return true;
-    else
-        return false;
 }

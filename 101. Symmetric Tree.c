@@ -64,6 +64,10 @@ void save (pTreeNode root, pArray T) {
 
 /* V2.0 */
 /* recursive solution */
+/* 比较root1->left 与 root2->right, 和
+ * root2->right与root2->left是否相等
+ * 递归运行
+ * */
 typedef struct TreeNode TreeNode, *pTreeNode;
 bool isMirror (pTreeNode root1, pTreeNode root2);
 bool isSymmetric(struct TreeNode* root) {
@@ -83,7 +87,9 @@ bool isMirror (pTreeNode root1, pTreeNode root2) {
 
 /* V3.0: iterative solution using queue */
 /* use my own lib: queue.h & queue.c */
-
+/* 用队列去实现，每次 pop 两个元素t1, t2 出来比较，相同则依次将
+ * t1->left, t2->right, t1->right, t2->left push进队列
+ * */
 typedef struct TreeNode TreeNode, *pTreeNode;
 bool isSymmetric(struct TreeNode* root) {
     if (!root)
