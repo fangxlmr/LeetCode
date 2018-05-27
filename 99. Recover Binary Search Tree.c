@@ -83,20 +83,22 @@ typedef struct TreeNode TreeNode;
 void recoverTree(struct TreeNode* root) {
     TreeNode *cur = root, *prev = NULL;     /* Morris遍历使用的变量 */
     TreeNode *first = NULL, *second = NULL; /* 错乱位置标记变量 */
+    TreeNode *parent = NULL;  /* 当前结点的中序直接前驱 */
 
     while (cur) {
         if (!cur->left) {
-            /*
-             * cur左结点为空，输出当前值，并cur = cur->right
-             */
-            res[count++] = cur->val;
+            if (parent && parent->val > cur->val) {
+                /*
+                 * 判断前驱与当前结点的大小，记录位置
+                 */
+                if (!first) {
+                    first = parent;
+                }
+                second = cur;   /* second 总是指向当前结点 */
+            }
+            parent = cur;
             cur = cur->right;
         } else {
-            /*
-             * cur左孩子不空，则找到左子树中的前驱结点prev
-             * 若前驱结点的右孩子为空，则将前驱结点的右孩子置位当前结点
-             * 若前驱结点的右孩子为当前结点，则将前驱结点的右孩子置空
-             */
             prev = cur->left;
             /* 找到前驱结点 */
             while (prev->right && prev->right != cur) {
@@ -107,11 +109,23 @@ void recoverTree(struct TreeNode* root) {
                 cur = cur->left;
             } else {
                 prev->right = NULL;
-                res[count++] = cur->val;
+                if (parent && parent->val > cur->val) {
+                    /*
+                     * 判断前驱与当前结点的大小，记录位置
+                     */
+                    if (!first) {
+                        first = parent;
+                    }
+                    second = cur; /* second 总是指向当前结点 */
+                }
+                parent = cur;
                 cur = cur->right;
             }
         }
     }
-    *returnSize = count;
-    return res;
+    if (first && second) {
+        int tmp = first->val;
+        first->val = second->val;
+        second->val = tmp;
+    }
 }
