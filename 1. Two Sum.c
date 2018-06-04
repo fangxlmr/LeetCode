@@ -1,15 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
 #define OFFSET 1000
 static int M = 0;  /* 求余散列法的模数 */
-
-
 typedef int ElemType;
 
 
-/* 采用链接发解决冲突问题 */
+/* 采用链接法解决冲突问题 */
 typedef struct Node     /* Node为链表节点的数据结构 */
 {
     ElemType key;
@@ -64,24 +58,6 @@ bool delete_HashTable(HashTable, ElemType);
  * 若销毁成功，返回true
  */
 void destroy_HashTable(HashTable, int);
-
-int *twoSum();
-
-
-int main()
-{
-    int nums[] = {3, 7}, target = 10;
-    int *result, i;
-    int length = sizeof(nums)/sizeof(int);
-    printf("length = %d\n", length);
-    result = twoSum(nums, length, target);
-    for(i = 0; i < 2; i++)
-    {
-        printf("[%d]:%d\n", result[i], nums[result[i]]);
-    }
-    return 0;
-
-}
 
 int *twoSum(int *nums, int numsSize, int target)
 {
