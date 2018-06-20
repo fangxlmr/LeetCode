@@ -6,13 +6,13 @@
 //void quick_sort (int *nums, int left, int right);
 int cmp(const void *a, const void *b)
 {
-    return (int *)a - (int *)b;
+    return *(int *)a - *(int *)b;
 }
 int** threeSum(int* nums, int numsSize, int* returnSize) {
     int **ret, *each;    /* ret 为二维数组，each为一维数组 */
     unsigned int size;       /* ret数组的长度 */
     int fix, left, right;    /* fix为第一个固定数， left right 为双指针 */
-    int sum, target;    /* 临时和变量 */
+    int sum;    /* 临时和变量 */
 
     if (numsSize == 0) {
         return NULL;
@@ -33,7 +33,6 @@ int** threeSum(int* nums, int numsSize, int* returnSize) {
         if (fix != 0 && nums[fix] == nums[fix - 1]) {
             continue;
         }
-        target = 0 - nums[fix];       /* 另外两个数的和为 0 - fix */
         left = fix + 1;       /* 双指针设定值 */
         right = numsSize - 1;
         while (left < right) {  /* 判断双指针对应的和是否为target */
@@ -46,15 +45,15 @@ int** threeSum(int* nums, int numsSize, int* returnSize) {
                 continue;
             }
 
-            sum = nums[left] + nums[right];
-            if (sum == target) {   /* 有效解，保存，继续下一个*/
+            sum = nums[fix] + nums[left] + nums[right];
+            if (sum == 0) {   /* 有效解，保存，继续下一个*/
                 each = (int *) malloc(3 * sizeof(int));
                 each[0] = nums[fix];
                 each[1] = nums[left];
                 each[2] = nums[right];
                 ret[(*returnSize)++] = each;
                 ++left;
-            } else if (sum < target) {     /* 偏小，left右移 */
+            } else if (sum < 0) {     /* 偏小，left右移 */
                 ++left;
             } else {        /* 偏大，right左移 */
                 --right;
