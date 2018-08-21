@@ -3,51 +3,76 @@
  * Note: The returned array must be malloced, assume caller calls free().
  */
 
+typedef struct _String {
+    char *str;
+    int idx;
+}String;
+
+#define push(S, c) S->str[S->idx++] = c
+#define pop(S) S->idx--
+
 char *dict[] = {"abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+char **ans;
+int count;
 
-void helper(char **result, int i, char *s, int len, int j)
+void save(String *S)
 {
-    char *t;
+    char *one;
 
-    if (j == len) {
-        return;
+    one = (char *) malloc((S->idx + 1) * sizeof(char));
+    memcpy(one, S->str, S->idx);
+    *(one + S->idx) = '\0';     /* append a extra '\0' at the end */
+    *(ans + count++) = one;
+}
+
+void dfs(char *digits, int idx, String *tmp)
+{
+    int i, len;
+    char *str;
+
+    if (!*(digits + idx)) {
+        save(tmp);
     } else {
-
-        t = (char *) malloc(sizeof(char));
-        for (int k = 0; k < len(dict[s[k] - '2']); ++k) {
-            t[]
+        str = dict[digits[idx] - '2'];
+        len = strlen(str);
+        for (i = 0; i < len; ++i) {
+            push(tmp, str[i]);
+            dfs(digits, idx + 1, tmp);
+            pop(tmp);
         }
     }
 }
 
 char** letterCombinations(char* digits, int* returnSize) {
-    char **result;
-    char *str;
     int len;        /* digits字符串长度 */
-    int i, num;     /* num，总共具有的可能性 */
+    int total;     /* total，总共具有的可能性 */
 
-    i = 0;
-    num = 1;
-    while (digits[i] != '\0') {
-        if (digits[i] == '7' || digits[i] == '9') {
-            num *= 4;
+    len = 0;
+    total = 1;
+    while (digits && digits[len] != '\0') {
+        if (digits[len] == '7' || digits[len] == '9') {
+            total *= 4;
         } else {
-            num *= 3;
+            total *= 3;
         }
-        ++i;
+        ++len;
     }
-    len = i;
 
-    if (num == 1) {
-        *returnSize = 0;
-        return NULL;
-
+    if (total == 1) {
+        total = 0;
+        ans = NULL;
     } else {
-        *returnSize = num;
-        result = (char **) malloc(num * sizeof(char *));
-
-
+        String S;
+        S.idx = 0;
+        S.str = (char *) malloc((len + 1) * sizeof(char));
+        ans = (char **) malloc(total * sizeof(char *));
+        count = 0;
+        dfs(digits, 0, &S);
     }
 
-    return result;
+    *returnSize = total;
+    return ans;
 }
+
+#undef push
+#undef pop
