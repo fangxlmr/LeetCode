@@ -9,6 +9,7 @@ int uniquePathsWithObstacles(int** obstacleGrid, int obstacleGridRowSize, int ob
     int memo[m][n];
     int i, j;
 
+    /* initialization */
     memo[m - 1][n - 1] = !grid[m - 1][n - 1];
     for (i = m - 2; i >= 0; --i) {
         if (grid[i][n - 1] == 1) {
