@@ -18,13 +18,14 @@ bool isScramble(char *s1, char *s2)
     int i, j, k, t;
     int memo[n][n][n + 1];
 
+    memset(memo, 0, n * n * sizeof(int));
     for (i = n - 1; i >= 0; --i) {
         for (j = n - 1; j >= 0; --j) {
             for (k = 1; k <= n - max(i, j); ++k) {
                 if (match(s1, i, s2, j, k) == 1) {
                     memo[i][j][k] = 1;
                 } else {
-                    for (t = 0; t < k; ++t) {
+                    for (t = 1; t < k; ++t) {
                         if (memo[i][j][t] && memo[i + t][j + t][k - t] ||
                         memo[i][j + k - t][t] && memo[i + t][j][k - t]) {
                             memo[i][j][k] = 1;
