@@ -6,54 +6,104 @@
  * };
  */
 
-typedef struct ListNode ListNode, *pListNode;
-pListNode merge_2 (pListNode, pListNode);
-pListNode merge_k (pListNode *lists, int left, int right);
-
+/* Approach 1: Compare one by one. */
 struct ListNode* mergeKLists(struct ListNode** lists, int listsSize) {
+    int i, j;
+    struct ListNode head, *rear, *min;
+
+    /* No lists exists. */
     if (listsSize == 0) {
         return NULL;
-    }
-    return merge_k(lists, 0, listsSize-1);
-}
 
+        /* Only one list. */
+    } else if (listsSize == 1) {
+        return lists[0];
 
-/* merge k lists */
-pListNode merge_k (pListNode *lists, int left, int right) {
-    if (right == left) {
-        return lists[left];
-    }
-    if (right - left == 1) {
-        return merge_2(lists[left], lists[right]);
-    }
-    int mid = left + (right - left) / 2;
-    return merge_2(merge_k(lists, left, mid), merge_k(lists, mid + 1, right));
-}
+        /* Two or more lists. */
+    } else {
+        struct ListNode *index[listsSize];
 
-
-/* merge 2 lists */
-pListNode merge_2 (struct ListNode* l1, struct ListNode* l2) {
-    typedef struct ListNode ListNode, *pListNode;
-    if (!l1 || !l2)    /* l1 或 l2 为 null */
-        return l1 ? l1 : l2;
-
-    pListNode dummy, rear;
-    dummy = rear = (pListNode) malloc(sizeof(ListNode));
-    rear->next = NULL;
-
-    while (l1 && l2){   /* 处理公共部分，选出较大值接在rear后 */
-        if (l1->val < l2->val){
-            rear->next = l1;
-            l1 = l1->next;
-        } else {
-            rear->next = l2;
-            l2 = l2->next;
+        head.next = NULL;
+        rear = &head;
+        /* Index array for show position of each list. */
+        for (i = 0; i < listsSize; ++i) {
+            index[i] = lists[i];
         }
-        rear = rear->next;
+        while (1) {
+            /* Find a non-null list in those lists. */
+            j = listsSize;
+            for (i = 0; i < listsSize; ++i) {
+                if (index[i] != NULL) {
+                    min = index[i];
+                    j = i;
+                    break;
+                }
+            }
+            /* If there still some nodes to be handled. */
+            if (j < listsSize) {
+                /* Find the min node by comparing one by one. */
+                for (i = j + 1; i < listsSize; ++i) {
+                    if (index[i] != NULL && min->val > index[i]->val) {
+                        min = index[i];
+                        j = i;
+                    }
+                }
+                rear->next = min;
+                rear = rear->next;
+                index[j] = min->next;
+
+                /*
+                 * No nodes to be handled which means that all node are
+                 * appended to the new list.
+                 */
+            } else {
+                break;
+            }
+        }
+        return head.next;
     }
-    rear->next = l1 ? l1 : l2;  /* 处理多余部分 */
-    pListNode p = dummy;    /* free redundant head node */
-    dummy = dummy->next;
-    free(p);
-    return dummy;
 }
+
+/* Approach 2: Optimize Approach 2 by Priority Queue. */
+
+/* Approach 3: Merge lists one by one. */
+struct ListNode* mergeTwoLists(struct ListNode* l1, struct ListNode* l2) {
+    struct ListNode dummy, *rear;
+
+    if (l1 == NULL || l2 == NULL) {
+        return l1 ? l1 : l2;
+    } else {
+        rear = &dummy;
+        while (l1 && l2) {
+            if (l1->val < l2->val) {
+                rear->next = l1;
+                l1 = l1->next;
+            } else {
+                rear->next = l2;
+                l2 = l2->next;
+            }
+            rear = rear->next;
+        }
+        rear->next = l1 ? l1 : l2;
+        return dummy.next;
+    }
+}
+
+struct ListNode* mergeKLists(struct ListNode** lists, int listsSize) {
+    int i;
+    struct ListNode *head;
+
+    if (listsSize == 0) {
+        return NULL;
+    } else if (listsSize == 1) {
+        return lists[0];
+    } else {
+        head = lists[0];
+        for (i = 1; i < listsSize; ++i) {
+            head = mergeTwoLists(head, lists[i]);
+        }
+        return head;
+    }
+}
+
+/* Approach 4: Merge with Divide And Conquer */

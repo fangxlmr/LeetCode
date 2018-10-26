@@ -6,48 +6,40 @@
  * };
  */
 struct ListNode* reverseKGroup(struct ListNode* head, int k) {
-    typedef struct ListNode Node, *pNode;
-    /* 计算链表长度len */
-    pNode pCur = head;
-    int len = 0;
-    while(pCur){
-        pCur = pCur->next;
-        ++len;
-    }
+    int i;
+    struct ListNode dummy;
+    struct ListNode *left, *right, *next;
+    struct ListNode *prev, *cur, *tmp;
 
-    /* 链表长度不足k个的，直接返回 */
-    if(len < k)
-        return head;
+    dummy.next = head;
+    left = right = head;
+    prev = &dummy;
 
-    /* 大于等于k个的 */
-    /* 共有len % k个子链表需反序 */
-    pNode dummy = (pNode) malloc(sizeof(Node)); /* 新建一个头结点，也即最后的返回值 */
-    dummy->next = NULL;
-    pNode pHead = dummy;    /* 头插法的头结点标志，初始为dummy */
-    pNode pTail;    /* 记录当前链表的尾结点 */
-    pCur = head;    /* 工作指针 */
-    while(len >= k){
-        int i = 0;
-        while(pCur && i < k){     /* 头插法，反序 */
-            if(i == 0)
-                pTail = pCur;
-            pNode p = pCur->next;
-            pCur->next = pHead->next;
-            pHead->next = pCur;
-            pCur = p;
-            ++i;
-            --len;
+    while (right != NULL) {
+        /* Find K nodes. */
+        for (i = 1; i < k && right != NULL; ++i) {
+            right = right->next;
         }
-        pHead = pTail;   /* 新的头结点 */
+
+        /* Left-out nodes. */
+        if (right == NULL) {
+            break;
+            /* Reverse nodes in the list. */
+        } else {
+            next = right->next;
+            cur = left;
+            while (cur != next) {
+                tmp = cur->next;
+                cur->next = prev;
+                prev = cur;
+                cur = tmp;
+            }
+            left->next->next = right;
+            left->next = next;
+        }
+        /* Continue walking. */
+        prev = left;
+        left = right = next;
     }
-
-    pHead->next = pCur;    /* 拼接链表多余的部分*/
-
-    /* 删除头结点 */
-    pNode pDel = dummy;
-    dummy = dummy->next;
-    free(pDel);
-    pDel = NULL;
-
-    return dummy;
+    return dummy.next;
 }
