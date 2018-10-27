@@ -1,32 +1,39 @@
 /**
  * Definition for a binary tree node.
- * struct TreeNode {
+ * struct struct TreeNode {
  *     int val;
- *     struct TreeNode *left;
- *     struct TreeNode *right;
+ *     struct struct TreeNode *left;
+ *     struct struct TreeNode *right;
  * };
  */
-typedef struct TreeNode TreeNode;
-TreeNode *sorted_array_to_BST(int *nums, int left, int right) {
-    TreeNode *t = (TreeNode *) malloc(sizeof(struct TreeNode));
+struct TreeNode *convert(int *nums, int left, int right) {
+    struct TreeNode *t;
 
     if (left > right) {
-        return NULL;
+        t = NULL;
     }  else {
-        int mid = left + (right - left) / 2;
-        t->val = *(nums + mid);
-        t->left = sorted_array_to_BST(nums, left, mid - 1);
-        t->right = sorted_array_to_BST(nums, mid + 1, right);
+        int mid;
+
+        t = (struct TreeNode *) malloc(sizeof(*t));
+        if (t != NULL) {
+            mid = left + ((right - left) >> 1);   /* left + (right - left) / 2 */
+            t->val = *(nums + mid);
+            t->left = convert(nums, left, mid - 1);
+            t->right = convert(nums, mid + 1, right);
+        } else {
+            t = NULL;
+        }
     }
     return t;
 }
 
 struct TreeNode* sortedArrayToBST(int* nums, int numsSize) {
-    TreeNode *root;
+    struct TreeNode *root;
 
-    if (!nums || numsSize == 0) {
-        return NULL;
+    if (numsSize == 0) {
+        root = NULL;
+    } else {
+        root = convert(nums, 0, numsSize - 1);
     }
-    root = sorted_array_to_BST(nums, 0, numsSize - 1);
     return root;
 }

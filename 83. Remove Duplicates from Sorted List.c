@@ -5,17 +5,15 @@
  *     struct ListNode *next;
  * };
  */
-
-typedef struct ListNode ListNode, *pListNode;
 struct ListNode* deleteDuplicates(struct ListNode* head) {
-    pListNode *indirect = &head;    /* indirect pointer point to head node */
-    while (*indirect && (*indirect)->next) {
-        if ((*indirect)->val != (*indirect)->next->val) {
-            /* if node, node->next dup, remove node */
-            *indirect = (*indirect)->next;
-            continue;
+    struct ListNode **walk = &head;
+
+    while (*walk) {
+        if ((*walk)->next && (*walk)->val == (*walk)->next->val) {
+            *walk = (*walk)->next;
+        } else {
+            walk = &(*walk)->next;
         }
-        indirect = &(*indirect)->next;  /* Move to next */
     }
     return head;
 }

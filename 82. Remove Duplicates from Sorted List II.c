@@ -5,24 +5,28 @@
  *     struct ListNode *next;
  * };
  */
-typedef struct ListNode ListNode, *pListNode;
 struct ListNode* deleteDuplicates(struct ListNode* head) {
-    pListNode *indirect = &head;
-    int flag = 0, value = 0;     /* to store dup value */
-    while (*indirect) {
-        if ((*indirect)->next && (*indirect)->val == (*indirect)->next->val) {
-            /* if node, node->next dup, remove node */
-            *indirect = (*indirect)->next;
-            flag = 1;
-            continue;
+    struct ListNode **walk = &head;
+    int dup, flag;
+
+    flag = 0;
+    while (*walk) {
+        if ((*walk)->next != NULL) {
+            dup = (*walk)->val == (*walk)->next->val;
+        } else {
+            dup = 0;
         }
-        if (flag) {
-            /* if dup, remove node->next in while loop */
-            *indirect = (*indirect)->next;
+
+        if (dup == 1) {
+            *walk = (*walk)->next;  /* Delete duplication.  */
+            flag = 1;
+        } else if (flag == 1) {
+            *walk = (*walk)->next;
             flag = 0;
         } else {
-            indirect = &(*indirect)->next;  /* move to next */
+            walk = &(*walk)->next;  /* Step forward. */
         }
     }
+
     return head;
 }
