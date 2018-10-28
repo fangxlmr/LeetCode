@@ -2,46 +2,136 @@
  * Return an array of size *returnSize.
  * Note: The returned array must be malloced, assume caller calls free().
  */
-int bisearch (int *nums, int target, int left, int right);
+/* Approach 1: Linear scan. */
 int* searchRange(int* nums, int numsSize, int target, int* returnSize) {
-    int *ret, index, begin, end;
+    int *index, i;
+    int left, right;
 
     *returnSize = 2;
-    ret = (int *) malloc(2 * sizeof(int));
-    ret[0] = -1;
-    ret[1] = -1;
+    index = (int *) malloc(2 * sizeof(*index));
+    index[0] = index[1] = -1;
+    left = 0;
+    right = numsSize - 1;
 
-    index = bisearch(nums, target, 0, numsSize - 1);
-    if (index == -1) {   /* 没有对应元素 */
-        return ret;
-    }
-    for (begin = index;  begin >= 0 ; --begin) { /* 向左查找 */
-        if (nums[begin] != target) {
-            break;
+    for (i = 0; i < numsSize && left <= right; ++i) {
+        if (nums[left] == target) {
+            index[0] = left;
+        } else {
+            left++;
+        }
+        if (nums[right] == target) {
+            index[1] = right;
+        } else {
+            right--;
         }
     }
-    ret[0] = begin + 1;
-    for (end = index; end < numsSize; ++end) {  /* 向右查找 */
-        if (nums[end] != target) {
-            break;
-        }
-    }
-    ret[1] = end - 1;
-    return ret;
+    return index;
 }
 
-/* 二分查找 */
-int bisearch (int *nums, int target, int left, int right) {
-    if (left > right) {
-        return -1;
-    }
-    int mid = left + (right - left) / 2;
+/* Approach 2.1: Binary search. */
+int* searchRange(int* nums, int numsSize, int target, int* returnSize) {
+    int *index, i;
+    int low, mid, high;
 
-    if (target == nums[mid]) {
-        return mid;
-    } else if (target < nums[mid]) {
-        return bisearch(nums, target, left, mid - 1);
+    *returnSize = 2;
+    index = (int *) malloc(2 * sizeof(*index));
+    index[0] = index[1] = -1;
+    low = 0;
+    high = numsSize - 1;
+
+    /* Find the first position. */
+    while (low <= high) {
+        mid = low + ((high - low) >> 1);
+        if (nums[mid] < target) {
+            low = mid + 1;
+        } else if (nums[mid] > target) {
+            high = mid - 1;
+        } else {
+            if (mid == 0 || nums[mid - 1] < target) {
+                index[0] = mid;
+                break;
+            } else {
+                high = mid - 1;
+            }
+        }
+    }
+    /* Target is not in nums. */
+    if (index[0] == -1) {
+        return index;
     } else {
-        return bisearch(nums, target, mid + 1, right);
+        /* Find the last position. */
+        low = 0;
+        high = numsSize - 1;
+        while (low <= high) {
+            mid = low + ((high - low) >> 1);
+            if (nums[mid] < target) {
+                low = mid + 1;
+            } else if (nums[mid] > target) {
+                high = mid - 1;
+            } else {
+                if (mid == numsSize - 1 || nums[mid + 1] > target) {
+                    index[1] = mid;
+                    break;
+                } else {
+                    low = mid + 1;
+                }
+            }
+        }
     }
+    return index;
 }
+
+/* Approach 2.2: Binary search with refactoring code. */
+/*
+ * Helper function will find the leftest position if
+ * it exits while leftest is true. It will return the rightest
+ * position if exists while leftest is false. It will return -1
+ * if no find.
+ */
+int helper(int *nums, int numsSize, int target, int leftest)
+{
+    int low, mid, high;
+
+    low = 0;
+    high = numsSize - 1;
+
+    while (low <= high) {
+        mid = low + ((high - low) >> 1);
+        if (nums[mid] < target) {
+            low = mid + 1;
+        } else if (nums[mid] > target) {
+            high = mid - 1;
+        } else {
+            /* Find the leftest position. */
+            if (leftest) {
+                if (mid == 0 || nums[mid - 1] < target) {
+                    return mid;
+                } else {
+                    high = mid - 1;
+                }
+                /* Find the rightest position. */
+            } else {
+                if (mid == numsSize - 1 || nums[mid + 1] > target) {
+                    return mid;
+                } else {
+                    low = mid + 1;
+                }
+            }
+        }
+    }
+    return -1;
+}
+int* searchRange(int* nums, int numsSize, int target, int* returnSize) {
+    int *index;
+
+    *returnSize = 2;
+    index = (int *) malloc(2 * sizeof(*index));
+    index[0] = helper(nums, numsSize, target, 1);
+    if (index[0] == -1) {
+        index[1] = -1;
+    } else {
+        index[1] = helper(nums, numsSize, target, 0);
+    }
+    return index;
+}
+
