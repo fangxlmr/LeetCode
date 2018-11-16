@@ -8,7 +8,7 @@ int hIndex(int* citations, int citationsSize) {
     qsort(citations, citationsSize, sizeof(int), cmp);
     for (i = 0; i < citationsSize; ++i) {
         if (citations[i] <= i) {
-            return i - 1;
+            return i;
         }
     }
     return citationsSize;

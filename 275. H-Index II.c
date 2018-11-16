@@ -36,6 +36,6 @@ int hIndex(int* citations, int citationsSize) {
         }
     }
 
-    /* This is more tricky part. */
+    /* This is more tricky part.*/
     return citationsSize - low;
 }
