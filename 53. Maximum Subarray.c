@@ -1,17 +1,20 @@
-/* kind of like a DP */
-#define max(x, y) ((x) > (y) ? (x) : (y))
+/* Approach 1: Simplest DP solution. */
+int twoMax(int x, int y)
+{
+    return x > y ? x : y;
+}
 int maxSubArray(int* nums, int numsSize) {
-    int i;
-    int res, cur_sum;
+    int i, res;
+    int x, y;
+    int dp[2];
 
-    res = INT_MIN;
-    cur_sum = 0;
-
-    for (i = 0; i < numsSize; ++i) {
-        cur_sum = max(cur_sum + nums[i], nums[i]);
-        res = max(cur_sum, res);
+    res = dp[0] = nums[0];
+    for (i = 1; i < numsSize; ++i) {
+        x = i % 2;
+        y = (i - 1) % 2;
+        dp[x] = twoMax(dp[y] + nums[i], nums[i]);
+        res = twoMax(res, dp[x]);
     }
-
     return res;
 }
 
