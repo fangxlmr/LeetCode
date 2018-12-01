@@ -33,6 +33,7 @@ int twoMax(int x, int y)
 {
     return x > y ? x : y;
 }
+
 int lengthOfLIS(int* nums, int numsSize) {
     if (numsSize <= 0) {
         return 0;
@@ -77,6 +78,7 @@ int helper(int *v, int i, int j, int target)
     }
     return -1;
 }
+
 int lengthOfLIS(int *nums, int numsSize) {
     if (numsSize <= 0) {
         return 0;
@@ -99,28 +101,4 @@ int lengthOfLIS(int *nums, int numsSize) {
         }
     }
     return count;
-}
-int lengthOfLIS(const int* p, int cnt) {
-
-    int i;
-    int max = 0;
-    int *seq = malloc(cnt * sizeof(int));
-
-    for(i = 0; i < cnt; ++i, ++p) {
-        int j;
-
-        for(j = max-1; j >= 0; --j) {
-            if (seq[j] < *p) {
-                break;
-            }
-        }
-        if (++j == max) {
-            seq[max++] = *p;
-        }
-        else {
-            seq[j] = seq[j] < *p ? seq[j] : *p;
-        }
-    }
-    free(seq);
-    return max;
 }
