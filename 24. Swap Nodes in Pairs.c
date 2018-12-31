@@ -6,21 +6,20 @@
  * };
  */
 struct ListNode* swapPairs(struct ListNode* head) {
-    struct ListNode *prev, *a, *b, *tmp;
-    struct ListNode self;
+    struct ListNode dummy, *prev, *first, *second;
 
-    self.next = head;
-    prev = &self;
-    while (prev->next && prev->next->next) {
-        a = prev->next;
-        b = a->next;
+    dummy.next = head;
+    prev = &dummy;
+    first = head;
 
-        tmp = b->next;
-        prev->next = b;
-        b->next = a;
-        a->next = tmp;
+    while (first && (second = first->next)) {
+        first->next = second->next;
+        prev->next = second;
+        second->next = first;
 
-        prev = a;
+        prev = first;
+        first = first->next;
     }
-    return self.next;
+
+    return dummy.next;
 }
