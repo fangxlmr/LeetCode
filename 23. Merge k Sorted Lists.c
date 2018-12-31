@@ -106,4 +106,36 @@ struct ListNode* mergeKLists(struct ListNode** lists, int listsSize) {
     }
 }
 
-/* Approach 4: Merge with Divide And Conquer */
+/* Approach 4: Merge with Divide And Conquer [Runtime Error, don't know why] */
+struct ListNode* merge2Lists(struct ListNode* l1, struct ListNode* l2) {
+    struct ListNode dummy, *tail;
+
+    tail = &dummy;
+    while (l1 && l2) {
+        if (l1->val < l2->val) {
+            tail->next = l1;
+            l1 = l1->next;
+        } else {
+            tail->next = l2;
+            l2 = l2->next;
+        }
+        tail = tail->next;
+    }
+    tail->next = l1 ? l1 : l2;
+    return dummy.next;
+}
+
+struct ListNode* mergeKLists(struct ListNode** lists, int listsSize) {
+    int i, interval;
+
+    interval = 1;
+    while (interval < listsSize) {
+        for (i = 0; i < listsSize - interval; i += 2 * interval) {
+            lists[i] = merge2Lists(lists[i], lists[i + interval]);
+        }
+        interval *= 2;
+    }
+
+    return listsSize > 0 ? lists[0] : lists;
+}
+
