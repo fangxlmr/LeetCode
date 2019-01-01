@@ -63,7 +63,7 @@ int** levelOrderBottom(struct TreeNode* root, int** columnSizes, int* returnSize
     int **res, *items;
 
     *returnSize = MAX;
-    *columnSizes = (int *) calloc(*returnSize, sizeof(int *));
+    *columnSizes = (int *) malloc(*returnSize * sizeof(int));
     res = (int **) malloc(*returnSize * sizeof(int *));
 
     enqueue(root);
