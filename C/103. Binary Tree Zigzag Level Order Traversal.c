@@ -155,3 +155,92 @@ int** zigzagLevelOrder(struct TreeNode* root, int** columnSizes, int* returnSize
     }
     return res;
 }
+
+#define MAX 1024
+static struct TreeNode *queue[MAX];
+static int head = 0;
+static int tail = 0;
+
+static int enqueue(struct TreeNode *x)
+{
+    if ((tail + 1) % MAX == head) {
+        return -1;
+    } else {
+        queue[tail] = x;
+        tail = (tail + 1) % MAX;
+        return 0;
+    }
+}
+
+static int dequeue(struct TreeNode **x)
+{
+    if (head == tail) {
+        return -1;
+    } else {
+        *x = queue[head];
+        head = (head + 1) % MAX;
+        return 0;
+    }
+}
+
+static int queue_isempty(void)
+{
+    return head == tail;
+}
+
+static size_t queue_get_size(void)
+{
+    if (tail >= head) {
+        return tail - head;
+    } else {
+        return MAX - (head - tail);
+    }
+}
+
+int** zigzagLevelOrder(struct TreeNode* root, int** columnSizes, int* returnSize) {
+    if (!root) {
+        *columnSizes = 0;
+        *returnSize = 0;
+        return NULL;
+    }
+
+    int i, level;
+    struct TreeNode *tmp;
+    size_t size;
+    int **res, *items;
+
+    res = (int **) malloc(MAX * sizeof(int *));
+    *columnSizes = (int *) malloc(MAX * sizeof(int));
+
+    enqueue(root);
+    level = 0;
+    while (queue_isempty() == 0) {
+        size = queue_get_size();
+        (*columnSizes)[level] = size;
+        items = (int *) malloc(size * sizeof(int));
+
+        for (i = 0; i < size; ++i) {
+            dequeue(&tmp);
+            items[i] = tmp->val;
+            if (level & 1) {     /* Odd */
+                if (tmp->left) {
+                    enqueue(tmp->left);
+                }
+                if (tmp->right) {
+                    enqueue(tmp->right);
+                }
+            } else {     /* Even */
+                if (tmp->right) {
+                    enqueue(tmp->right);
+                }
+                if (tmp->left) {
+                    enqueue(tmp->left);
+                }
+            }
+        }
+        res[level++] = items;
+    }
+
+    *returnSize = level;
+    return res;
+}
