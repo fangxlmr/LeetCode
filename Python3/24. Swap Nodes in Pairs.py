@@ -14,3 +14,4 @@ class Solution:
             cur.next.next, cur.next, prev.next = cur, tmp, cur.next
             prev, cur = prev.next.next, tmp
         return dummy.next
+
