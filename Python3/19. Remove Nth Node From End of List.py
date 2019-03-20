@@ -5,12 +5,7 @@
 #         self.next = None
 
 class Solution:
-    def removeNthFromEnd(self, head, n):
-        """
-        :type head: ListNode
-        :type n: int
-        :rtype: ListNode
-        """
+    def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
         dummy, dummy.next = ListNode(0), head
         fast = slow = dummy
 
