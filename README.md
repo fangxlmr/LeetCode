@@ -1,2 +1,2 @@
 # LeetCode
-Solve problems on LeetCode in C programming language.
+Solve problems on LeetCode in C and Python programming language.
